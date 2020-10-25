@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Services\JsonRpcService\JsonRpcClient;
+use App\Services\JsonRpcService\JsonRpcClientInterface;
+use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +16,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(JsonRpcClientInterface::class, function () {
+            $httpClient = new Client();
+            $url = config('jsonrpc.url');
+            return new JsonRpcClient($httpClient, $url);
+        });
     }
 
     /**
